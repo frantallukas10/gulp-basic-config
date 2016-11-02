@@ -1,0 +1,132 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+v2.0 | 20110126
+License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em,
+img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u,
+i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table,
+caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details,
+embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby,
+section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after {
+  content: '';
+  content: none;
+}
+
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+@font-face {
+  font-family: opensansregular;
+  src: url("../fonts/opensansregular.eot");
+  src: url("../fonts/fonts/opensansregular.eot?#iefix") format("embedded-opentype"), url("../fonts/fonts/opensansregular.woff2") format("woff2"), url("../fonts/fonts/opensansregular.woff") format("woff"), url("../fonts/fonts/opensansregular.ttf") format("truetype"), url("../fonts/fonts/opensansregular.svg#svgFontName") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: opensansbold;
+  src: url("../fonts/fonts/opensansbold.eot");
+  src: url("../fonts/fonts/opensansbold.eot?#iefix") format("embedded-opentype"), url("../fonts/fonts/opensansbold.woff2") format("woff2"), url("../fonts/fonts/opensansbold.woff") format("woff"), url("../fonts/fonts/opensansbold.ttf") format("truetype"), url("../fonts/fonts/opensansbold.svg#svgFontName") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: opensansextrabold;
+  src: url("../fonts/fonts/opensansextrabold.eot");
+  src: url("../fonts/fonts/opensansextrabold.eot?#iefix") format("embedded-opentype"), url("../fonts/fonts/opensansextrabold.woff2") format("woff2"), url("../fonts/fonts/opensansextrabold.woff") format("woff"), url("../fonts/fonts/opensansextrabold.ttf") format("truetype"), url("../fonts/fonts/opensansextrabold.svg#svgFontName") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: opensanssemibold;
+  src: url("../fonts/fonts/opensanssemibold.eot");
+  src: url("../fonts/fonts/opensanssemibold.eot?#iefix") format("embedded-opentype"), url("../fonts/fonts/opensanssemibold.woff2") format("woff2"), url("../fonts/fonts/opensanssemibold.woff") format("woff"), url("../fonts/fonts/opensanssemibold.ttf") format("truetype"), url("../fonts/fonts/opensanssemibold.svg#svgFontName") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: icon;
+  src: url("../fonts/fonts/icon.eot?8364vd");
+  src: url("../fonts/fonts/icon.eot?8364vd#iefix") format("embedded-opentype"), url("../fonts/fonts/icon.ttf?8364vd") format("truetype"), url("../fonts/fonts/icon.woff?8364vd") format("woff"), url("../fonts/fonts/icon.svg?8364vd#font-icon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+/* clearfix */
+.clearfix:before {
+  content: "";
+  display: table;
+  margin: 0;
+  padding: 0;
+}
+.clearfix:after {
+  content: "";
+  display: table;
+  margin: 0;
+  padding: 0;
+  clear: both;
+}
+
+body {
+  background-color: black;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1 {
+  text-transform: uppercase;
+  color: white;
+  font-size: 50px;
+}
+
+.list-link li a {
+  color: white;
+  font-size: 40px;
+}
+.list-link li a:hover {
+  text-decoration: underline;
+  color: red;
+}
+
+.link {
+  color: white;
+  font-size: 40px;
+}
+.link:hover {
+  text-decoration: underline;
+  color: red;
+}
