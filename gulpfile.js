@@ -1,124 +1,86 @@
-var gulp = require('gulp'),
-		browserSync = require('browser-sync').create(),
-		watch = require('gulp-watch'),
-		compass = require('gulp-compass'),
-		imagemin = require('gulp-imagemin'),
-		pngquant = require('imagemin-pngquant'),
-		minifyCss = require('gulp-minify-css'),
-		concat = require('gulp-concat'),
-		uglify = require('gulp-uglify'),
-		plumber = require('gulp-plumber'),
-		notify = require('gulp-notify'),
-		autoprefixer = require('gulp-autoprefixer');
+const gulp = require('gulp'),
+  sass = require('gulp-sass'),
+  autoprefixer = require('gulp-autoprefixer'),
+  sourcemaps = require('gulp-sourcemaps'),
+  cssnano = require('gulp-cssnano'),
+  browserSync = require('browser-sync').create(),
+  imagemin = require('gulp-imagemin'),
+  plumber = require('gulp-plumber'),
+  del = require('del');
 
-//Paths
-var P = {
-	autoprefix: {
-		src: './styles/sass/*.scss',
-		dest: './styles/autoprefix'
-	},
-	scss: {
-		src: './styles/autoprefix/*.scss',
-		dest: './styles/css'
-	},
-	cssMin: {
-		name: 'styles_min.css',
-		src: './styles/css/base.css',
-		dest: './styles/css'
-	},
-	imgMin: {
-		src: ['./images/target/*.png', './images/target/*.jpg', './images/target/*.gif'],
-		dest: './images/min/'
-	},
-	jsMin: {
-		name: 'main_min.js',
-		src: './js/*.js',
-		dest: './js'
-	}
+gulp.task('clean', async () => {
+  del.sync('dist');
+});
+
+gulp.task('copy', async () => {
+  gulp.src('app/**/*.html').pipe(gulp.dest('dist'));
+  gulp.src('app/fonts/**/*').pipe(gulp.dest('dist/fonts'));
+});
+
+const sassOptions = {
+  outputStyle: 'expanded'
 };
 
-//Error notification settings for plumber
-var plumberErrorHandler = { errorHandler: notify.onError("Error: <%= error.message %>") };
+const autoprefixerOptions = {
+  browsers: ['last 2 versions']
+};
 
-//Autoprefixer
-gulp.task('autoprefixer', function() {
-	return gulp.src(P.autoprefix.src)
-	.pipe(autoprefixer({
-		browsers: ['last 2 versions'],
-		cascade: false
-	}))
-	.pipe(gulp.dest(P.autoprefix.dest));
+const onError = err => {
+  notify.onError({
+    title: 'Gulp',
+    subtitle: 'Failure!',
+    message: 'Error: <%= error.message %>',
+    sound: 'Basso'
+  })(err);
+  this.emit('end');
+};
+
+gulp.task('styles', async () => {
+  gulp
+    .src('app/**/*.scss')
+    .pipe(plumber({ errorHandler: onError }))
+    .pipe(sourcemaps.init())
+    .pipe(sass(sassOptions))
+    .pipe(autoprefixer(autoprefixerOptions))
+    .pipe(cssnano())
+    .pipe(gulp.dest('dist'));
 });
 
-//Compass task
-gulp.task('compass', function() {
-	gulp.src(P.scss.src)
-	.pipe(plumber(plumberErrorHandler))
-	.pipe(compass({
-		sass: './styles/autoprefix',
-		css: './styles/css',
-	}))
-	.pipe(gulp.dest(P.scss.dest))
-	.on('error', function(error) {
-		console.log(error);
-		this.emit('end');
-	});
+gulp.task('browserSync', async () => {
+  browserSync.init({
+    server: {
+      baseDir: 'app'
+    }
+  });
 });
 
-//Css min
-gulp.task('css-min', function() {
-	return gulp.src(P.cssMin.src)
-	.pipe(plumber(plumberErrorHandler))
-	.pipe(concat(P.cssMin.name))
-	.pipe(minifyCss({compatibility: 'ie8'}))
-	.pipe(gulp.dest(P.cssMin.dest));
+gulp.task('images', async () => {
+  gulp
+    .src('app/**/*.+(png|jpg|jpeg|gif|svg)')
+    // Caching images that ran through imagemin
+    .pipe(
+      imagemin({
+        interlaced: true,
+        progressive: true,
+        optimizationLevel: 5,
+        svgoPlugins: [
+          {
+            removeViewBox: true
+          }
+        ]
+      })
+    )
+    .pipe(gulp.dest('dist'));
 });
 
+gulp.task(
+  'default',
+  gulp.parallel('browserSync', 'copy', 'styles', 'images'),
+  async () => {
+    gulp.watch('app/**/*.scss', ['styles']);
+    gulp.watch('app/**/*.html', browserSync.reload);
+    gulp.watch('app/**/*.js', browserSync.reload);
+  }
+);
 
-//Image min
-gulp.task('img-min', function(){
-	return gulp.src(P.imgMin.src)
-	.pipe(plumber(plumberErrorHandler))
-	.pipe(imagemin({
-		optimizationLevel: 7,
-		progressive: true,
-		svgoPlugins: [{removeViewBox: false}],
-		use: [pngquant()]
-	}))
-	.pipe(gulp.dest(P.imgMin.dest));
-});
-
-//JS min
-gulp.task('js-min', function() {
-	return gulp.src(P.jsMin.src)
-	.pipe(plumber(plumberErrorHandler))
-	.pipe(concat(P.jsMin.name))
-	.pipe(uglify())
-	.pipe(gulp.dest(P.jsMin.dest));
-});
-
-gulp.task('watch', function () {
-	browserSync.init({
-		server: {
-			baseDir: "./"
-		}
-	});
-
-	gulp.watch(P.autoprefix.src, ['autoprefixer']);
-	gulp.watch(P.scss.src, ['compass']);
-
-	gulp.watch(['./styles/sass/*.scss', './styles/css/*.css', './js/*.js', './*.html'], function(e){
-		gulp.src(e.path)
-		.pipe(plumber(plumberErrorHandler))
-		.pipe(browserSync.stream())
-		.pipe(notify(
-			e.path.replace(__dirname, '').replace(/\\/g, '/') + ' changed/reloaded'
-		));
-	});
-});
-
-//Dafault task with postCss
-gulp.task('default', ['autoprefixer', 'compass', 'watch']);
-
-//Min files
-gulp.task('min', ['img-min', 'css-min', 'js-min']);
+gulp.task('build', gulp.parallel('clean', 'copy', 'styles', 'images'));
