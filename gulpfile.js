@@ -38,7 +38,7 @@ gulp.task("browserSync", async () => {
     }
   });
   gulp
-    .watch("app/styles/**/*.scss", gulp.parallel(["styles"]))
+    .watch("app/styles/**/*.scss", gulp.parallel("styles"))
     .on("change", browserSync.reload);
   gulp.watch("app/*.html").on("change", browserSync.reload);
   gulp.watch("app/**/*.js").on("change", browserSync.reload);
