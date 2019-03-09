@@ -27,7 +27,21 @@ gulp.task("useref", async () => {
     .pipe(useref())
     .pipe(gulpIf("*.js", uglify()))
     .pipe(gulpIf("*.css", cssnano()))
-    .pipe(gulp.dest("dist"));
+    .pipe(gulp.dest("dist"))
+    .pipe(browserSync.stream());
+});
+
+gulp.task("browserSync", async () => {
+  browserSync.init({
+    server: {
+      baseDir: "dist"
+    }
+  });
+  gulp
+    .watch("app/styles/**/*.scss", gulp.parallel(["styles"]))
+    .on("change", browserSync.reload);
+  gulp.watch("app/*.html").on("change", browserSync.reload);
+  gulp.watch("app/**/*.js").on("change", browserSync.reload);
 });
 
 gulp.task("styles", async () => {
@@ -46,14 +60,6 @@ gulp.task("styles", async () => {
     // .pipe(sourcemaps.init())
     // .pipe(sourcemaps.write("map"))
     .pipe(gulp.dest("dist/styles"));
-});
-
-gulp.task("browserSync", async () => {
-  browserSync.init({
-    server: {
-      baseDir: "app"
-    }
-  });
 });
 
 gulp.task("images", async () => {
@@ -77,12 +83,7 @@ gulp.task("images", async () => {
 
 gulp.task(
   "default",
-  gulp.parallel("clean", "styles", "images", "useref", "copy", "browserSync"),
-  async () => {
-    gulp.watch("app/*.html", browserSync.reload);
-    gulp.watch("app/**/*.js", browserSync.reload);
-    gulp.watch("app/styles/*.scss", gulp.parallel("styles"));
-  }
+  gulp.parallel("clean", "styles", "images", "useref", "copy", "browserSync")
 );
 
 gulp.task(
