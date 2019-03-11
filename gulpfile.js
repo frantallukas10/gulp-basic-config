@@ -13,7 +13,7 @@ const gulpIf = require("gulp-if");
 const cssnano = require("gulp-cssnano");
 
 gulp.task("clean", async () => {
-  return del.sync("dist");
+  del.sync("dist");
 });
 
 gulp.task("copy", async () => {
@@ -22,7 +22,7 @@ gulp.task("copy", async () => {
 });
 
 gulp.task("useref", async () => {
-  return gulp
+  gulp
     .src("app/*.html")
     .pipe(useref())
     .pipe(gulpIf("*.js", uglify()))
@@ -38,10 +38,14 @@ gulp.task("browserSync", async () => {
     }
   });
   gulp
+    .watch("app/**/*.html", gulp.parallel("copy"))
+    .on("change", browserSync.reload);
+  gulp
     .watch("app/styles/**/*.scss", gulp.parallel("styles"))
     .on("change", browserSync.reload);
-  gulp.watch("app/*.html").on("change", browserSync.reload);
-  gulp.watch("app/**/*.js").on("change", browserSync.reload);
+  gulp
+    .watch("app/**/*.js", gulp.parallel("useref"))
+    .on("change", browserSync.reload);
 });
 
 gulp.task("styles", async () => {
@@ -64,7 +68,7 @@ gulp.task("styles", async () => {
 
 gulp.task("images", async () => {
   gulp
-    .src("app/**/*.+(png|jpg|jpeg|gif)")
+    .src("app/**/*.+(png|jpg|jpeg|gif|svg)")
     // Caching images that ran through imagemin
     .pipe(
       imagemin({
